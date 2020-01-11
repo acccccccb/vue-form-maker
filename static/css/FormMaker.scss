@@ -1,0 +1,40 @@
+/deep/ .form-control-tree .custom-tree-node {
+  width:100%!important;
+}
+/deep/ .form-control-tree .el-tree-node__content {
+  height:auto!important;
+  padding:20px!important;
+  border-bottom:1px dotted #dedede;
+}
+/deep/ .form-control-tree .treeitem {
+  border-bottom:1px dotted #dedede;
+}
+/deep/ .el-form-item__label {
+  font-size:16px!important;
+  line-height:160%!important;
+  white-space: normal!important;
+}
+.formBoxDec {
+  margin-top:50px!important;
+  border-bottom:1px solid #dedede;
+}
+.formBoxDec,.formBox {
+  width:70%;
+  background: #fff;
+  padding:40px;
+  margin:auto;
+}
+.formItem {
+  position: relative;
+}
+.formItemAction {
+  float:right;
+  position: absolute;
+  bottom:-40px;
+  right:0;
+}
+/deep/ .el-radio-group label {
+  display:block;
+  padding-top:10px;
+  padding-bottom:10px;
+}
