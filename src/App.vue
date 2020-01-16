@@ -7,13 +7,15 @@
                         text-color="#fff"
                         active-text-color="#fff"
                         :router="true"
+                        default-active="/"
                         mode="horizontal">
-                    <el-menu-item index="/">
+                    <el-menu-item>
                         <div class="formMakerLogo">
                             FormMaker
                             <el-tag type="danger" effect="dark" size="mini">{{config.version}}</el-tag>
                         </div>
                     </el-menu-item>
+                    <el-menu-item index="/" active>创建表单</el-menu-item>
                     <el-menu-item index="/FormMakerList">表单列表</el-menu-item>
                 </el-menu>
             </el-header>

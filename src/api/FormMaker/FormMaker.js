@@ -30,10 +30,20 @@ export default {
     getById:function(id){
         let params = new URLSearchParams({"id":id});
         return $http.post('admin/formMaker/getById',params).then((res)=>{
-            let result = res.obj;
+            let result = {...res.obj};
             result.fields = qs.parse(res.obj.fields, {arrayFormat: 'indices', allowDots: true});
             result.formData = qs.parse(res.obj.formData, {arrayFormat: 'indices', allowDots: true});
-            console.log(result);
+            Object.keys(result.fields).forEach(function(key){
+                let item = result.fields[key];
+                console.log(item);
+                if(item.type=='multiple_choice') {
+                    result.formData[item.name] = [];
+                }
+            });
+            result.formData[result.fields[0].name] = [];
+            // if(item.type=='multiple_choice') {
+            //     result.formData[item.name] = [];
+            // }
             return result;
         })
     },

@@ -51,7 +51,7 @@
                     <table class="el-table__body" border="0" style="width:100%;">
                         <tr class="el-table__row">
                             <th class="is-center" width="50">
-                                <div class="cell">-</div>
+                                <div class="cell">#</div>
                             </th>
                             <th class="is-center" v-for="item in formDataModal.data.rows[0]">
                                 <div class="cell">{{item.fieldLabel}}</div>
