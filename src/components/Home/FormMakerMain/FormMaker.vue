@@ -42,7 +42,43 @@
             </div>
         </el-aside>
         <el-main style="background:#fafafa;">
-            <div style="padding-bottom:100px;">
+            <div v-if="Object.keys(form.formData).length==0" style="padding-bottom:100px;">
+                <el-card class="box-card" shadow="naver">
+                    <div slot="header" class="clearfix">
+                        <span>开始页面</span>
+                        <el-button style="float: right; padding: 3px 0" type="text">Github</el-button>
+                        <el-button style="float: right; padding: 3px 0;margin-right:20px;" type="text">Gitee</el-button>
+                    </div>
+                    <div>
+                        <div>
+                            <h1>用表单轻松搭建数据收集系统</h1>
+                            <p>
+                                搭积木一样，拖拽式的设计表单结构，数千款表单模板，多种精美主题样式，品牌样式增强，让表单实用又精致。逻辑规则、插件集成、多终端管理，把表单升级为数据收集系统。
+                            </p>
+                        </div>
+
+                        <div>
+                            <h1>自定义的主题和背景</h1>
+                            <p>
+                                数十款精美主题模板供你选择，一键为表单换「皮肤」。你也可以自由定义背景、头图、颜色，设计出独有的精美页面。
+                            </p>
+                            <p>
+                                <img src="https://gd-assets.jinshujucdn.com/assets/site/features/data-collection/theme/customized-theme-1@1x-ef62092bf6b18f35a62cce660f09e5e99edd1a99cbd8eec0f09ae323297dcee0.png" alt="">
+                            </p>
+                        </div>
+                        <div>
+                            <h1>数据和报表</h1>
+                            <p>
+                                让数据为你所用，专业图表展示数据价值
+                            </p>
+                            <p>
+                                <img src="https://gd-assets.jinshujucdn.com/assets/site/features/reports/data-mark@1x-65906499c8aedd020c2f9d6ec03600f7f344028afce983207c77ac5aeb6ffcd5.png" alt="">
+                            </p>
+                        </div>
+                    </div>
+                </el-card>
+            </div>
+            <div v-show="Object.keys(form.formData).length>0" style="padding-bottom:100px;">
                 <div class="formBoxDec">
                     <h2>
                         {{form.name||'表单标题'}}
@@ -141,6 +177,10 @@
                                         inactive-text="禁用">
                                 </el-switch>
                             </el-form-item>
+                            <div>
+                                <el-button @click="saveForm" :disabled="form.fields.length==0" style="width:100%;" size="small" type="danger" >保存并发布</el-button>
+                                <el-button @click="resetForm" style="width:100%;margin-left:0;margin-top:10px;" size="small" type="default" >重置</el-button>
+                            </div>
                         </el-form>
                     </el-tab-pane>
                     <el-tab-pane label="字段设置" name="second">
@@ -200,10 +240,6 @@
                         </div>
                     </el-tab-pane>
                 </el-tabs>
-            </div>
-            <div style="padding-left:20px;padding-right:20px;">
-                <el-button @click="saveForm" :disabled="form.fields.length==0" style="width:100%;" size="small" type="danger" >保存并发布</el-button>
-                <el-button @click="resetForm" style="width:100%;margin-left:0;margin-top:10px;" size="small" type="default" >重置</el-button>
             </div>
         </el-aside>
     </el-container>
