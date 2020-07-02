@@ -17,13 +17,27 @@ export default {
         })
     },
     add:function(formData){
-        console.log(formData);
+        if(formData.id) {
+            delete formData.id;
+        }
         formData.fields = qs.stringify(formData.fields, {arrayFormat: 'indices', allowDots: true});
         formData.formData = qs.stringify(formData.formData, {arrayFormat: 'indices', allowDots: true});
-        console.log(typeof formData.fields);
-        console.log(formData.fields);
         let params = new URLSearchParams(formData);
         return $http.post('admin/formMaker/add',params).then((res)=>{
+            return res;
+        })
+    },
+    clear:function(id){
+        let params = new URLSearchParams({"id":id});
+        return $http.post('admin/formMaker/clear',params).then((res)=>{
+            return res;
+        })
+    },
+    update:function(formData){
+        formData.fields = qs.stringify(formData.fields, {arrayFormat: 'indices', allowDots: true});
+        formData.formData = qs.stringify(formData.formData, {arrayFormat: 'indices', allowDots: true});
+        let params = new URLSearchParams(formData);
+        return $http.post('admin/formMaker/update',params).then((res)=>{
             return res;
         })
     },
@@ -35,15 +49,9 @@ export default {
             result.formData = qs.parse(res.obj.formData, {arrayFormat: 'indices', allowDots: true});
             Object.keys(result.fields).forEach(function(key){
                 let item = result.fields[key];
-                console.log(item);
-                if(item.type=='multiple_choice') {
-                    result.formData[item.name] = [];
-                }
+                result.formData[item.name] = item.value;
             });
-            result.formData[result.fields[0].name] = [];
-            // if(item.type=='multiple_choice') {
-            //     result.formData[item.name] = [];
-            // }
+            // result.formData[result.fields[0].name] = [];
             return result;
         })
     },

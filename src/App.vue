@@ -32,7 +32,7 @@
 
 <script>
     import config from '../package'
-
+    import $api from './api/FormMaker/FormMaker'
     export default {
         name: 'App',
         data() {
@@ -43,6 +43,9 @@
         mounted() {
             this.config = config;
         },
+        watch:{
+
+        }
     }
 </script>
 

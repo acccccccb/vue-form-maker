@@ -178,7 +178,8 @@
                                 </el-switch>
                             </el-form-item>
                             <div>
-                                <el-button @click="saveForm" :disabled="form.fields.length==0" style="width:100%;" size="small" type="danger" >保存并发布</el-button>
+                                <el-button v-if="isAdd==true" @click="saveForm" :disabled="form.fields.length==0" style="width:100%;" size="small" type="danger" >保存并发布</el-button>
+                                <el-button v-if="isAdd==false" @click="updateForm" :disabled="form.fields.length==0" style="width:100%;" size="small" type="danger" >更新</el-button>
                                 <el-button @click="resetForm" style="width:100%;margin-left:0;margin-top:10px;" size="small" type="default" >重置</el-button>
                             </div>
                         </el-form>
@@ -267,9 +268,39 @@
             DateTimePicker,
             Rate,
         },
+        beforeMount:function(){
+            let _this = this;
+            let params = this.$route.params;
+            if(params.id) {
+                this.isAdd = false;
+                $api.getById(params.id).then((res)=>{
+                    console.log(res);
+                    _this.form.id = res.id;
+                    _this.form.name = res.name;
+                    _this.form.description = res.description;
+                    _this.form.enable = res.enable=='true'?true:false;
+                    _this.form.jumpUrl = res.jumpUrl;
+                    _this.form.submitBtnColor = res.submitBtnColor;
+                    _this.form.submitBtnTextColor = res.submitBtnTextColor;
+                    console.log(res.fields);
+                    let keys = Object.keys(res.fields);
+                    let fields = [];
+                    keys.forEach((item)=>{
+                        res.fields[item].required = res.fields[item].required==='true'?true:false;
+                        res.fields[item].private = res.fields[item].private==='true'?true:false;
+                        fields.push(res.fields[item]);
+                    });
+                    _this.form.fields = fields;
+                    _this.form.formData = res.formData;
+                })
+            } else {
+                this.isAdd = true;
+            }
+        },
         data(){
             return {
                 activeName:'first',
+                isAdd:true,
                 form:{
                     "name": "",
                     "description": "",
@@ -303,6 +334,7 @@
                             tempData.splice(index-1,2,data1);
                             tempData.splice(index,0,data2);
                             this.$set(this.form,'fields',tempData);
+                            console.log(tempData);
                         }
                     }
                 })
@@ -394,6 +426,32 @@
                     }
                 });
             },
+            updateForm:function(){
+                let $form = this.$refs['createForm'];
+                $form.validate((valid)=>{
+                    if(valid) {
+                        let loading = this.$loading({
+                            body:true,
+                            fullscreen:true,
+                            lock:true,
+                            text:'正在更新表单',
+                            background:'rgba(255,255,255,0.4)'
+                        });
+                        console.log(this.form);
+                        $api.update({...this.form}).then((res)=>{
+                            if(res.success==true) {
+                                this.$message.success(res.msg);
+                                this.resetForm(true);
+                            } else {
+                                this.$message.warning(res.msg);
+                            }
+                            loading.close();
+                        }).catch(()=>{
+                            loading.close();
+                        });
+                    }
+                });
+            },
             resetForm:function(action){
                 let _this = this;
                 let reset = function(){
@@ -449,7 +507,8 @@
                     });
                 },
                 deep:true
-            }
+            },
+
         }
     }
 </script>

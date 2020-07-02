@@ -51,6 +51,7 @@
                                     type="text"
                                     :placeholder="item.notes"
                                     :maxlength="11"
+                                    :minlength="11"
                                     prefix-icon="el-icon-phone"
                                     v-if="item.type=='single_line_phone'"></el-input>
                             <el-date-picker
