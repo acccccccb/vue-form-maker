@@ -7,7 +7,7 @@
                         text-color="#fff"
                         active-text-color="#fff"
                         :router="true"
-                        default-active="/"
+                        :default-active="active"
                         mode="horizontal">
                     <el-menu-item>
                         <div class="formMakerLogo">
@@ -17,6 +17,7 @@
                     </el-menu-item>
                     <el-menu-item index="/" active>创建表单</el-menu-item>
                     <el-menu-item index="/FormMakerList">表单列表</el-menu-item>
+                    <el-menu-item disabled index="/FormMakerPublish">查看表单</el-menu-item>
                 </el-menu>
             </el-header>
             <el-main style="padding:0;">
@@ -24,7 +25,7 @@
             </el-main>
             <el-footer class="formMakerFooter">
                 <a class="formMakerFooterLink" :href="config.homepage" target="_blank">{{config.name}}-{{config.version}}</a>
-                code by <a class="formMakerFooterLink" :href="config.homepage" target="_blank">{{config.author}}</a>
+                Code by <a class="formMakerFooterLink" :href="config.homepage" target="_blank">{{config.author}}</a>
             </el-footer>
         </el-container>
     </div>
@@ -37,14 +38,18 @@
         name: 'App',
         data() {
             return {
-                config: {}
+                config: {},
+                active:'/',
             }
         },
         mounted() {
             this.config = config;
         },
         watch:{
-
+            $route:function(to,from){
+                console.log(to.path);
+                this.active = to.path;
+            }
         }
     }
 </script>

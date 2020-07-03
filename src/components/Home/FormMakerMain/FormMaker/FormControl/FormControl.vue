@@ -131,6 +131,19 @@
                         ],
                         "validation": {}
                     },
+                    location_select:{
+                        "name":"",
+                        "label": "选择地区",
+                        "value":"",
+                        "type": "location_select",
+                        "notes": "请选择地区",
+                        "private": false,
+                        "required":true,
+                        "rules":[
+                            { required: true, message: '请选择地区', trigger: ['blur','change'] },
+                        ],
+                        "validation": {}
+                    },
                     single_line_date:{
                         "name":"",
                         "label": "日期",
@@ -171,8 +184,11 @@
                         "validation": {}
                     },
                     custom_image:{
+                        "name":"",
                         "label":"自定义图片",
                         "type": "custom_image",
+                        "src":"",
+                        "value":""
                     },
                 }
             }

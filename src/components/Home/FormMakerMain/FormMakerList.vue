@@ -10,7 +10,6 @@
         </el-form>
         <el-table v-loading="tableLoading" size="small" :data="table.rows" border>
             <el-table-column prop="id" label="ID" width="50" align="center"></el-table-column>
-            <el-table-column prop="nickname" label="创建人" width="80" align="center"></el-table-column>
             <el-table-column prop="name" label="表单名" align="center"></el-table-column>
             <el-table-column prop="description" label="表单描述" align="center"></el-table-column>
             <el-table-column prop="jumpUrl" label="跳转链接" align="center"></el-table-column>
@@ -148,7 +147,7 @@
                 this.getList();
             },
             viewForm:function(id){
-                this.$router.push({name: 'FormMakerPublish',target:'_blank',query:{id:id}});
+                this.$router.push({name: 'FormMakerPublish',target:'_blank',params:{id:id}});
                 // window.open(`/#/FormMakerPublish?id=${id}`);
                 // this.viewModal.visible = true;
                 // this.$nextTick(()=>{
@@ -159,7 +158,8 @@
                 this.$router.push({name: 'FormMaker',target:'_self',params:{id:id}});
             },
             clear:function(id){
-                if(id && typeof id == Number) {
+                console.log(typeof id);
+                if(id && typeof id == 'number') {
                     this.id = id;
                 }
                 this.$confirm('确定要清空数据吗，该操作无法撤销？','提示',{

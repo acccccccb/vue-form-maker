@@ -101,7 +101,24 @@
                                 :allow-drop="catchAllowDrop"
                                 default-expand-all>
                             <div class="custom-tree-node" slot-scope="{ node, data }">
+                                <!--自定义控件-->
+                                <div v-if="data.type=='custom_image'">
+                                    <div v-if="data.type=='custom_image'" class="formItem">
+                                        <el-image :src="data.src" style="width:100%;">
+                                            <div slot="error" class="image-slot">
+                                                请填写图片url
+                                            </div>
+                                        </el-image>
+                                        <div class="formItemAction" style="bottom:-20px!important;">
+                                            <el-button size="mini" @click="moveUp(data)" type="text" icon="el-icon-top"></el-button>
+                                            <el-button size="mini" @click="moveDown(data)" type="text" icon="el-icon-bottom"></el-button>
+                                            <el-button size="mini" @click="deleteItem(data)" type="text" icon="el-icon-delete"></el-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--表单控件-->
                                 <el-form-item
+                                        v-else
                                         :show-message="false"
                                         :prop="data.name+''"
                                         class="formItem"
@@ -123,8 +140,7 @@
                                     <DateTimePicker v-if="data.type=='single_line_date'" :data="data"></DateTimePicker>
                                     <DateTimePicker v-if="data.type=='single_line_time'" :data="data"></DateTimePicker>
                                     <Rate v-if="data.type=='single_line_rate'" :data="data"></Rate>
-
-
+                                    <LocationSelect v-if="data.type=='location_select'" :data="data"></LocationSelect>
                                 </el-form-item>
                             </div>
                         </el-tree>
@@ -188,19 +204,21 @@
                         <!--编辑区-->
                         <div style="background:#fffceb;padding:20px;">
                             <div  v-if="editor.name">
-                                <div><h3>编辑字段：</h3></div>
+                                <div><h3>编辑：</h3></div>
                                 <el-form size="mini">
-                                    <el-form-item label="字段名">
+                                    <el-form-item label="字段名" v-if="editor.notes!==undefined">
                                         <el-input v-model="editor.label" placeholder="字段名"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="为空时提示">
+                                    <el-form-item label="为空时提示" v-if="editor.notes!==undefined">
                                         <el-input v-model="editor.notes" placeholder="字段名"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="是否必填">
+                                    <el-form-item label="是否必填" v-if="editor.required==true || editor.required==false">
                                         <el-radio border v-model="editor.required" :label="true">是</el-radio>
                                         <el-radio border v-model="editor.required" :label="false">否</el-radio>
                                     </el-form-item>
-
+                                    <el-form-item label="请填写图片路径" v-if="editor.src!==undefined">
+                                        <el-input v-model="editor.src" placeholder="请填写图片路径"></el-input>
+                                    </el-form-item>
                                     <div v-if="editor.type=='single_line_number'">
                                         <el-form-item label="最小" >
                                             <el-input-number v-model.number="editor.min"></el-input-number>
@@ -247,6 +265,7 @@
 </template>
 
 <script>
+    import Correct from '../../../api/FormMaker/Correct'
     import $api from '../../../api/FormMaker/FormMaker'
     import FormMakerList from './FormMakerList'
     import FormControl from './FormMaker/FormControl/FormControl'
@@ -256,6 +275,7 @@
     import InputText from './FormMaker/FormControl/FormControlComponents/InputText'
     import DateTimePicker from './FormMaker/FormControl/FormControlComponents/DateTimePicker'
     import Rate from './FormMaker/FormControl/FormControlComponents/Rate'
+    import LocationSelect from './FormMaker/FormControl/FormControlComponents/LocationSelect'
     export default {
         name: "FormMaker",
         components:{
@@ -267,6 +287,7 @@
             InputText,
             DateTimePicker,
             Rate,
+            LocationSelect,
         },
         beforeMount:function(){
             let _this = this;
@@ -282,15 +303,7 @@
                     _this.form.jumpUrl = res.jumpUrl;
                     _this.form.submitBtnColor = res.submitBtnColor;
                     _this.form.submitBtnTextColor = res.submitBtnTextColor;
-                    console.log(res.fields);
-                    let keys = Object.keys(res.fields);
-                    let fields = [];
-                    keys.forEach((item)=>{
-                        res.fields[item].required = res.fields[item].required==='true'?true:false;
-                        res.fields[item].private = res.fields[item].private==='true'?true:false;
-                        fields.push(res.fields[item]);
-                    });
-                    _this.form.fields = fields;
+                    _this.form.fields = Correct.do(res.fields);
                     _this.form.formData = res.formData;
                 })
             } else {
@@ -442,6 +455,7 @@
                             if(res.success==true) {
                                 this.$message.success(res.msg);
                                 this.resetForm(true);
+                                this.$router.push({name: 'FormMakerList'});
                             } else {
                                 this.$message.warning(res.msg);
                             }
@@ -456,6 +470,7 @@
                 let _this = this;
                 let reset = function(){
                     _this.$refs.createForm.resetFields();
+                    let id = _this.form.id;
                     _this.form = {
                         "name": "",
                         "description": "",
@@ -466,6 +481,9 @@
                         "fields": [],
                         formData:{},
                     };
+                    if(_this.isAdd==false) {
+                        _this.form.id = id;
+                    }
                     _this.activeEditorIndex=null;
                     _this.activeEditorKey=null;
                     _this.editor={};

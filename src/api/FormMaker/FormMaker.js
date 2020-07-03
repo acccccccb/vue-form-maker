@@ -1,4 +1,5 @@
 import $http from '../../api/request'
+import Correct from '../../api/FormMaker/Correct'
 import qs from 'qs'
 export default {
     getList:function(formData){
@@ -46,6 +47,7 @@ export default {
         return $http.post('admin/formMaker/getById',params).then((res)=>{
             let result = {...res.obj};
             result.fields = qs.parse(res.obj.fields, {arrayFormat: 'indices', allowDots: true});
+            result.fields = Correct.do(result.fields);
             result.formData = qs.parse(res.obj.formData, {arrayFormat: 'indices', allowDots: true});
             Object.keys(result.fields).forEach(function(key){
                 let item = result.fields[key];
